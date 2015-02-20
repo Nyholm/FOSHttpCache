@@ -28,6 +28,7 @@
     },
     "require-dev": {
         "guzzle/plugin-mock": "*",
+        "guzzlehttp/guzzle": "~5",
         "mockery/mockery": "*",
         "monolog/monolog": "*",
         "symfony/process": "~2.3",

@@ -12,6 +12,7 @@
 namespace FOS\HttpCache\Tests\Unit\ProxyClient;
 
 use FOS\HttpCache\Exception\ExceptionCollection;
+use FOS\HttpCache\HttpClient\Guzzle3Adapter;
 use FOS\HttpCache\ProxyClient\Varnish;
 use Guzzle\Http\Client;
 use Guzzle\Http\Exception\CurlException;

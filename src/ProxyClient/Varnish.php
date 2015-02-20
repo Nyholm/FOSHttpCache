@@ -16,6 +16,7 @@ use FOS\HttpCache\Exception\MissingHostException;
 use FOS\HttpCache\ProxyClient\Invalidation\BanInterface;
 use FOS\HttpCache\ProxyClient\Invalidation\PurgeInterface;
 use FOS\HttpCache\ProxyClient\Invalidation\RefreshInterface;
+use FOS\HttpCache\ProxyClient\Request\InvalidationRequest;
 
 /**
  * Varnish HTTP cache invalidator.
@@ -125,28 +126,36 @@ class Varnish extends AbstractProxyClient implements BanInterface, PurgeInterfac
 
         return $this;
     }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @throws MissingHostException If a relative path is queued for purge/
-     *                              refresh and no base URL is set
-     *
-     */
-    protected function createRequest($method, $url, array $headers = array())
+    
+    protected function queueRequest($method, $url, array $headers = array())
     {
-        $request = parent::createRequest($method, $url, $headers);
-
-        // For purge and refresh, add a host header to the request if it hasn't
-        // been set
-        if (self::HTTP_METHOD_BAN !== $method
-            && '' == $request->getHeader('Host')
-        ) {
-            throw MissingHostException::missingHost($url);
+        if (self::HTTP_METHOD_BAN !== $method) {
+            // AND NO HOST IS SET
         }
-
-        return $request;
+        
+        $this->queue->add(new InvalidationRequest($method, $url, $headers));
     }
+    
+
+//    /**
+//     * {@inheritdoc}
+//     *
+//     * @throws MissingHostException If a relative path is queued for purge/
+//     *                              refresh and no base URL is set
+//     *
+//     */
+//    protected function queueRequest($method, $url, array $headers = array())
+//    {
+//        // For purge and refresh, add a host header to the request if it hasn't
+//        // been set
+//        if (self::HTTP_METHOD_BAN !== $method
+//            && !isset($headers['Host'])
+//        ) {
+//            throw MissingHostException::missingHost($url);
+//        }
+//        
+//        parent::queueRequest($method, $url, $headers);
+//    }
 
     /**
      * {@inheritdoc}
